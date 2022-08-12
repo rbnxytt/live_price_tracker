@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:sample_hive/custom_line_chart.dart';
+import 'package:sample_hive/model/data_model.dart';
 
-void main() {
+late Box box;
+void main() async {
+  await Hive.initFlutter();
+
+  Hive.registerAdapter<Data>(DataAdapter());
+  box = await Hive.openBox<Data>("data");
+
   runApp(const MyApp());
 }
 
@@ -26,94 +35,111 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List cityList = [
-    'Guangzhou',
-    'Maoming',
-    'Foshan',
-    'Shenzhen',
-    'Huizhou'
-  ];
-
-  final List priceList = [12.1, 11.8, 11.8, 11.8, 11.8];
-  final List dateList = [
-    '08/4/2022',
-    '08/4/2022',
-    '08/4/2022',
-    '08/4/2022',
-    '08/4/2022',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Live Price Tracker - Pigs'),
       ),
-      body: Column(
-        children: [
-          const CustomLineChart(),
-          SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: const [
-                    Expanded(
-                      child: SizedBox(
-                        child: Text('Date'),
-                      ),
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        child: Text('Market'),
-                      ),
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        child: Text('Current Price'),
-                      ),
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        child: Text('Previous Price'),
-                      ),
-                    ),
-                    Expanded(
-                      child: SizedBox(child: Text('Change %')),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 250.0,
+      body: ValueListenableBuilder<Box<Data>>(
+        valueListenable: Hive.box<Data>("data").listenable(),
+        builder: (context, box, _) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
                   width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                      itemCount: cityList.length,
-                      itemBuilder: (context, index) => Row(
+                  child: const Center(child: CustomLineChart())),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.40,
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Latest Pig Price as of ${DateFormat('EEEE , MMMM d, yyyy').format(box.getAt(box.values.length - 1)!.date!)}',
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: const [
+                          Text('My Watchlist'),
+                          Icon(Icons.keyboard_arrow_down_outlined)
+                        ],
+                      ),
+                      Row(
+                        children: const [
+                          Expanded(
+                            child: SizedBox(
+                              child: Text('Market'),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              child: Text('Current Price'),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              child: Text('Previous Price'),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(child: Text('Change %')),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.35,
+                        width: double.infinity,
+                        child: ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (context, index) => Row(
                             children: [
                               Expanded(
-                                  child:
-                                      SizedBox(child: Text(dateList[index]))),
-                              Expanded(
-                                  child:
-                                      SizedBox(child: Text(cityList[index]))),
+                                  child: SizedBox(
+                                      child: Text(box
+                                          .getAt(box.values.length - 1 - index)!
+                                          .city!))),
                               Expanded(
                                   child: SizedBox(
-                                      child:
-                                          Text(priceList[index].toString()))),
+                                      child: Text(box
+                                          .getAt(box.values.length - 1 - index)!
+                                          .price
+                                          .toString()))),
                               Expanded(
                                   child: SizedBox(
-                                      child:
-                                          Text(priceList[index].toString()))),
+                                      child: box.values.length - index < 5
+                                          ? const Text('-')
+                                          : Text(box
+                                              .getAt(box.values.length -
+                                                  index -
+                                                  6)!
+                                              .price
+                                              .toString()))),
                               Expanded(
-                                  child: SizedBox(
-                                      child: Text(priceList[index].toString())))
+                                child: SizedBox(
+                                    child: box.values.length - index < 5
+                                        ? const Text('-')
+                                        : Text(
+                                            '${(((box.getAt(box.values.length - 1 - index)!.price! / box.getAt(box.values.length - index - 6)!.price!) - 1) * 100).toStringAsFixed(2)} %')),
+                              ),
                             ],
-                          )),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          )
-        ],
+              )
+            ],
+          );
+        },
       ),
     );
   }
