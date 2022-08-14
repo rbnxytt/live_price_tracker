@@ -7,7 +7,16 @@ var marketTextStyle =
     const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600);
 var defaultBackground = const Color(0xff080820);
 
+double labelSize = 14.0;
+
 double priceFontSize = 18.0;
+
+List<String> tableHeaderTexts = [
+  'Markets',
+  'Current Price (RMB)',
+  'Previous Price',
+  'Change %'
+];
 
 List<String> cities = ['Guangzhou', 'Shenzhen', 'Huizhou', 'Maoming', 'Foshan'];
 
