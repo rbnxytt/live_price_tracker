@@ -59,44 +59,25 @@ class _HomePageState extends State<HomePage> {
 
   void checkInitialvalue() {
     if (box.values.isEmpty) {
-      box.add(
-          Data(city: 'Guangzhou', date: DateTime(2022, 8, 4), price: 11.92));
-      box.add(Data(city: 'Shenzhen', date: DateTime(2022, 8, 4), price: 11.5));
-      box.add(Data(city: 'Huizhou', date: DateTime(2022, 8, 4), price: 11.05));
-      box.add(Data(city: 'Maoming', date: DateTime(2022, 8, 4), price: 11.8));
-      box.add(Data(city: 'Foshan', date: DateTime(2022, 8, 4), price: 11.93));
-
-      box.add(Data(city: 'Guangzhou', date: DateTime(2022, 8, 5), price: 11.8));
-      box.add(Data(city: 'Shenzhen', date: DateTime(2022, 8, 5), price: 11.5));
-      box.add(Data(city: 'Huizhou', date: DateTime(2022, 8, 5), price: 11.6));
-      box.add(Data(city: 'Maoming', date: DateTime(2022, 8, 5), price: 12.1));
-      box.add(Data(city: 'Foshan', date: DateTime(2022, 8, 5), price: 12.1));
-
-      box.add(Data(city: 'Guangzhou', date: DateTime(2022, 8, 6), price: 11.8));
-      box.add(Data(city: 'Shenzhen', date: DateTime(2022, 8, 6), price: 11.5));
-      box.add(Data(city: 'Huizhou', date: DateTime(2022, 8, 6), price: 12));
-      box.add(Data(city: 'Maoming', date: DateTime(2022, 8, 6), price: 12.1));
-      box.add(Data(city: 'Foshan', date: DateTime(2022, 8, 6), price: 12.13));
-
-      box.add(Data(city: 'Guangzhou', date: DateTime(2022, 8, 7), price: 11.8));
-      box.add(Data(city: 'Shenzhen', date: DateTime(2022, 8, 7), price: 11.5));
-      box.add(Data(city: 'Huizhou', date: DateTime(2022, 8, 7), price: 12.04));
-      box.add(Data(city: 'Maoming', date: DateTime(2022, 8, 7), price: 12));
-      box.add(Data(city: 'Foshan', date: DateTime(2022, 8, 7), price: 12.12));
-
-      box.add(Data(city: 'Guangzhou', date: DateTime(2022, 8, 8), price: 11.8));
-      box.add(Data(city: 'Shenzhen', date: DateTime(2022, 8, 8), price: 11.5));
-      box.add(Data(city: 'Huizhou', date: DateTime(2022, 8, 8), price: 12.04));
-      box.add(Data(city: 'Maoming', date: DateTime(2022, 8, 8), price: 12));
-      box.add(Data(city: 'Foshan', date: DateTime(2022, 8, 8), price: 12.06));
-
-      box.add(Data(city: 'Guangzhou', date: DateTime(2022, 8, 9), price: 11.8));
-      box.add(Data(city: 'Shenzhen', date: DateTime(2022, 8, 9), price: 11.5));
-      box.add(Data(city: 'Huizhou', date: DateTime(2022, 8, 9), price: 12.06));
-      box.add(Data(city: 'Maoming', date: DateTime(2022, 8, 9), price: 11.8));
-      box.add(Data(city: 'Foshan', date: DateTime(2022, 8, 9), price: 11.86));
+      for (int i = 0; i < priceList.length; i++) {
+        int position = i < 5
+            ? i
+            : i < 10
+                ? i - 5
+                : i < 15
+                    ? i - 10
+                    : i < 20
+                        ? i - 15
+                        : i < 25
+                            ? i - 20
+                            : i - 25;
+        box.add(Data(
+            city: cities[position],
+            date: initialDates[position],
+            price: priceList[i]));
+      }
+      setState(() {});
     }
-    setState(() {});
   }
 
   @override
@@ -529,7 +510,7 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
         TextEditingController textController3,
         TextEditingController textController4,
         TextEditingController textController5,
-        refresh()) {
+        Function() refresh) {
       showCupertinoModalPopup(
         context: context,
         builder: (context) {
@@ -581,89 +562,109 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                   ),
                                 ),
                                 Expanded(
-                                  child: TextFormField(
-                                    controller: textController1,
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Enter Price',
-                                        label: Text('Guangzhou'),
-                                        labelStyle: TextStyle(
-                                            color: Colors.greenAccent)),
-                                    validator: (textController1) {
-                                      if (isPriceValid(textController1!)) {
-                                        return null;
-                                      } else {
-                                        return 'Invalid Value';
-                                      }
-                                    },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0),
+                                    child: TextFormField(
+                                      controller: textController1,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Enter Price',
+                                          label: Text('Guangzhou'),
+                                          labelStyle: TextStyle(
+                                              color: Colors.greenAccent)),
+                                      validator: (textController1) {
+                                        if (isPriceValid(textController1!)) {
+                                          return null;
+                                        } else {
+                                          return 'Invalid Value';
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: TextFormField(
-                                    controller: textController2,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Enter Price',
-                                        label: Text('Shenzhen'),
-                                        labelStyle: TextStyle(
-                                            color: Colors.greenAccent)),
-                                    validator: (textController2) {
-                                      if (isPriceValid(textController2!)) {
-                                        return null;
-                                      } else {
-                                        return 'Invalid Value';
-                                      }
-                                    },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0),
+                                    child: TextFormField(
+                                      controller: textController2,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Enter Price',
+                                          label: Text('Shenzhen'),
+                                          labelStyle: TextStyle(
+                                              color: Colors.greenAccent)),
+                                      validator: (textController2) {
+                                        if (isPriceValid(textController2!)) {
+                                          return null;
+                                        } else {
+                                          return 'Invalid Value';
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: TextFormField(
-                                    controller: textController3,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Enter Price',
-                                        label: Text('Huizhou'),
-                                        labelStyle: TextStyle(
-                                            color: Colors.greenAccent)),
-                                    validator: (textController3) {
-                                      if (isPriceValid(textController3!)) {
-                                        return null;
-                                      } else {
-                                        return 'Invalid Value';
-                                      }
-                                    },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0),
+                                    child: TextFormField(
+                                      controller: textController3,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Enter Price',
+                                          label: Text('Huizhou'),
+                                          labelStyle: TextStyle(
+                                              color: Colors.greenAccent)),
+                                      validator: (textController3) {
+                                        if (isPriceValid(textController3!)) {
+                                          return null;
+                                        } else {
+                                          return 'Invalid Value';
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: TextFormField(
-                                    controller: textController4,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Enter Price',
-                                        label: Text('Maoming'),
-                                        labelStyle: TextStyle(
-                                            color: Colors.greenAccent)),
-                                    validator: (textController4) {
-                                      if (isPriceValid(textController4!)) {
-                                        return null;
-                                      } else {
-                                        return 'Invalid Value';
-                                      }
-                                    },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0),
+                                    child: TextFormField(
+                                      controller: textController4,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Enter Price',
+                                          label: Text('Maoming'),
+                                          labelStyle: TextStyle(
+                                              color: Colors.greenAccent)),
+                                      validator: (textController4) {
+                                        if (isPriceValid(textController4!)) {
+                                          return null;
+                                        } else {
+                                          return 'Invalid Value';
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: TextFormField(
-                                    controller: textController5,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Enter Price',
-                                        label: Text('Foshan'),
-                                        labelStyle: TextStyle(
-                                            color: Colors.greenAccent)),
-                                    validator: (textController5) {
-                                      if (isPriceValid(textController5!)) {
-                                        return null;
-                                      } else {
-                                        return 'Invalid Value';
-                                      }
-                                    },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0),
+                                    child: TextFormField(
+                                      controller: textController5,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Enter Price',
+                                          label: Text('Foshan'),
+                                          labelStyle: TextStyle(
+                                              color: Colors.greenAccent)),
+                                      validator: (textController5) {
+                                        if (isPriceValid(textController5!)) {
+                                          return null;
+                                        } else {
+                                          return 'Invalid Value';
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                               ],
