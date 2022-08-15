@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sample_hive/app_controller.dart';
 import 'package:sample_hive/main.dart';
 import 'package:sample_hive/update_button.dart';
 
@@ -25,18 +27,52 @@ class _HomePageState extends State<HomePage> {
   TextEditingController? _priceTextController3;
   TextEditingController? _priceTextController4;
   TextEditingController? _priceTextController5;
+  FocusNode? _focusNode1;
+  FocusNode? _focusNode2;
+  FocusNode? _focusNode3;
+  FocusNode? _focusNode4;
+  FocusNode? _focusNode5;
 
   @override
   void initState() {
     checkInitialvalue();
+    _focusNode1 = FocusNode();
+    _focusNode2 = FocusNode();
+    _focusNode3 = FocusNode();
+    _focusNode4 = FocusNode();
+    _focusNode5 = FocusNode();
     _scrollController = ScrollController();
     _priceTextController1 = TextEditingController();
     _priceTextController2 = TextEditingController();
     _priceTextController3 = TextEditingController();
     _priceTextController4 = TextEditingController();
     _priceTextController5 = TextEditingController();
-
+    _focusNode1!.addListener(() {
+      checkFocus(_focusNode1!);
+    });
+    _focusNode2!.addListener(() {
+      checkFocus(_focusNode2!);
+    });
+    _focusNode3!.addListener(() {
+      checkFocus(_focusNode3!);
+    });
+    _focusNode4!.addListener(() {
+      checkFocus(_focusNode4!);
+    });
+    _focusNode5!.addListener(() {
+      checkFocus(_focusNode5!);
+    });
     super.initState();
+  }
+
+  void checkFocus(FocusNode node) {
+    if (node.hasFocus) {
+      Provider.of<AppController>(context, listen: false).hideCalendar();
+      print('Hide calendar');
+    } else if (!node.hasFocus) {
+      Provider.of<AppController>(context, listen: false).showCalendar();
+      print('Calendar up');
+    }
   }
 
   void checkInitialvalue() {
@@ -64,6 +100,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    _focusNode1!.dispose();
+    _focusNode2!.dispose();
+    _focusNode3!.dispose();
+    _focusNode4!.dispose();
+    _focusNode5!.dispose();
     _scrollController!.dispose();
     _priceTextController1!.dispose();
     _priceTextController2!.dispose();
@@ -246,6 +287,11 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                                 UpdateButton(
+                                  focusNode1: _focusNode1!,
+                                  focusNode2: _focusNode2!,
+                                  focusNode3: _focusNode3!,
+                                  focusNode4: _focusNode4!,
+                                  focusNode5: _focusNode5!,
                                   refresh: () {
                                     setState(() {});
                                   },

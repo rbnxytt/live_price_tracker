@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
+import 'app_controller.dart';
 import 'constants.dart';
 import 'custom_animated_container.dart';
 import 'model/data_model.dart';
@@ -16,6 +18,11 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
     required this.priceTextController5,
     required this.box,
     required this.refresh,
+    required this.focusNode1,
+    required this.focusNode2,
+    required this.focusNode3,
+    required this.focusNode4,
+    required this.focusNode5,
   }) : super(key: key);
 
   final TextEditingController priceTextController1;
@@ -25,6 +32,11 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
   final TextEditingController priceTextController5;
   final Box box;
   final void Function() refresh;
+  final FocusNode focusNode1;
+  final FocusNode focusNode2;
+  final FocusNode focusNode3;
+  final FocusNode focusNode4;
+  final FocusNode focusNode5;
 
   @override
   Widget build(BuildContext context) {
@@ -57,26 +69,44 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Center(
+                          Center(
                               child: Padding(
-                            padding: EdgeInsets.only(top: 50.0),
-                            child: Text(
-                              'Pick A Date to Update',
-                              style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent),
-                            ),
+                            padding: const EdgeInsets.only(top: 50.0),
+                            child: Provider.of<AppController>(context).isClicked
+                                ? ElevatedButton(
+                                    onPressed: () {
+                                      Provider.of<AppController>(context,
+                                              listen: false)
+                                          .hideCalendar();
+                                    },
+                                    child: const Text('Show Calendar'),
+                                  )
+                                : const Text(
+                                    'Pick A Date to Update',
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blueAccent),
+                                  ),
                           )),
                           CustomAnimatedContainer(
-                            child: CalendarDatePicker(
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2022, 8, 1),
-                              lastDate: DateTime.now(),
-                              onDateChanged: (date) {
-                                addDate = date;
-                              },
-                            ),
+                            child: Provider.of<AppController>(context).isClicked
+                                ? const SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                  )
+                                : CalendarDatePicker(
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2022, 8, 1),
+                                    lastDate: DateTime.now(),
+                                    onDateChanged: (date) {
+                                      addDate = date;
+                                    },
+                                  ),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                            width: double.infinity,
                           ),
                           Expanded(
                             child: Column(
@@ -96,6 +126,7 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 50.0),
                                     child: TextFormField(
+                                      focusNode: focusNode1,
                                       controller: textController1,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
@@ -119,6 +150,7 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 50.0),
                                     child: TextFormField(
+                                      focusNode: focusNode2,
                                       controller: textController2,
                                       decoration: InputDecoration(
                                           hintText: 'Enter Price',
@@ -141,6 +173,7 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 50.0),
                                     child: TextFormField(
+                                      focusNode: focusNode3,
                                       controller: textController3,
                                       decoration: InputDecoration(
                                           hintText: 'Enter Price',
@@ -163,6 +196,7 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 50.0),
                                     child: TextFormField(
+                                      focusNode: focusNode4,
                                       controller: textController4,
                                       decoration: InputDecoration(
                                           hintText: 'Enter Price',
@@ -185,6 +219,7 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 50.0),
                                     child: TextFormField(
+                                      focusNode: focusNode5,
                                       controller: textController5,
                                       decoration: InputDecoration(
                                           hintText: 'Enter Price',
@@ -215,6 +250,11 @@ class UpdateButton extends StatelessWidget with InputValidationMixin {
                                 children: [
                                   TextButton(
                                     onPressed: () {
+                                      textController1.clear();
+                                      textController2.clear();
+                                      textController3.clear();
+                                      textController4.clear();
+                                      textController5.clear();
                                       Navigator.pop(context);
                                     },
                                     child: const Text(

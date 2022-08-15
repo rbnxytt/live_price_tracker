@@ -1,5 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample_hive/app_controller.dart';
 
 class CustomLineChart extends StatefulWidget {
   const CustomLineChart({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class CustomLineChartState extends State<CustomLineChart> {
       children: <Widget>[
         AspectRatio(
           // aspectRatio: 1.70,
-          aspectRatio: 10 / 3,
+          aspectRatio: 11 / 4,
           child: Container(
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(
@@ -33,7 +35,7 @@ class CustomLineChartState extends State<CustomLineChart> {
               padding: const EdgeInsets.only(
                   right: 18.0, left: 12.0, top: 24, bottom: 12),
               child: LineChart(
-                showAvg ? avgData() : mainData(),
+                showAvg ? avgData() : mainData(context),
               ),
             ),
           ),
@@ -113,7 +115,7 @@ class CustomLineChartState extends State<CustomLineChart> {
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
-  LineChartData mainData() {
+  LineChartData mainData(context) {
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -162,19 +164,19 @@ class CustomLineChartState extends State<CustomLineChart> {
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
-      maxX: 11,
+      maxX: Provider.of<AppController>(context).maxX,
       minY: 0,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
           spots: const [
             FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
+            FlSpot(1, 2),
+            FlSpot(2, 5),
+            FlSpot(3, 3.1),
+            FlSpot(4, 4),
+            FlSpot(5.5, 3),
+            FlSpot(6, 4),
           ],
           isCurved: true,
           gradient: LinearGradient(
